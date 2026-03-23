@@ -46,7 +46,18 @@ function Home() {
     setProducts(res.data);
     setSkip(5);
   } else {
-    setProducts(prev => [...prev, ...res.data]);
+    // 🔥 REMOVE DUPLICATES
+    setProducts(prev => {
+      const newProducts = [...prev, ...res.data];
+
+      const uniqueProducts = newProducts.filter(
+        (item, index, self) =>
+          index === self.findIndex(p => p._id === item._id)
+      );
+
+      return uniqueProducts;
+    });
+
     setSkip(skipVal + 5);
   }
 
