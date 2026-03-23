@@ -1,19 +1,38 @@
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Register() {
   const [form, setForm] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const submit = async () => {
+    if (!form.name || !form.email || !form.password) {
+      return toast.error("All fields are required");
+    }
+
+    if (form.password.length < 6) {
+      return toast.error("Password must be at least 6 characters");
+    }
+
     try {
+      setLoading(true);
+
       await API.post("/auth/register", form);
 
-      alert("Registered Successfully");
-      navigate("/login");
+      toast.success("Registered Successfully ✅");
+
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+
     } catch (err) {
-      alert(err.response?.data?.msg || "Error");
+      toast.error(err.response?.data?.msg || "Registration failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -49,9 +68,14 @@ function Register() {
 
         <button
           onClick={submit}
-          className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+          disabled={loading}
+          className={`w-full py-3 rounded text-white font-semibold transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Register
+          {loading ? "Creating Account..." : "Register"}
         </button>
 
         <p className="text-center mt-4 text-gray-600">
