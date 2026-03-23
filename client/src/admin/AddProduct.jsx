@@ -59,7 +59,7 @@ function AddProduct() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto bg-white p-8 rounded-xl shadow">
+    <div className="max-w-3xl mx-auto bg-white p-5 rounded-xl shadow">
 
       <h2 className="text-2xl font-bold mb-6 text-blue-600">
         Add Product
