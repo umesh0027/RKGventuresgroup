@@ -37,8 +37,18 @@ exports.createProduct = async (req, res) => {
 };
 // READ
 exports.getProducts = async (req, res) => {
-  const products = await Product.find().populate("category");
-  res.json(products);
+  const { limit = 5, skip = 0 } = req.query;
+
+  try {
+    const products = await Product.find()
+      .populate("category")
+      .limit(Number(limit))
+      .skip(Number(skip));
+
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ msg: "Error fetching products" });
+  }
 };
 
 // UPDATE
@@ -65,6 +75,7 @@ exports.getProductsByCategory = async (req, res) => {
 
   try {
     const products = await Product.find({ category: categoryId })
+      .populate("category")
       .limit(Number(limit))
       .skip(Number(skip));
 
