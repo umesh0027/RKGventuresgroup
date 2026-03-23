@@ -59,7 +59,7 @@ function ProductsAdmin() {
       </div>
 
       {/* PRODUCTS GRID */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {products.map(p => (
           <div key={p._id} className="bg-white p-4 rounded shadow">
 
@@ -77,7 +77,7 @@ function ProductsAdmin() {
               {/* EDIT */}
               <button
                 onClick={() => window.location.href = `/admin/edit/${p._id}`}
-                className="text-green-600"
+                className="text-green-600 font-semibold"
               >
                 Edit
               </button>
@@ -85,7 +85,7 @@ function ProductsAdmin() {
               {/* DELETE */}
               <button
                 onClick={() => deleteProduct(p._id)}
-                className="text-red-500"
+                className="text-red-500 font-semibold"
               >
                 Delete
               </button>
