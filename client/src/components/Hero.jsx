@@ -1,5 +1,4 @@
-import heroImg from "../assets/logo.png
-  "; // 👉 apni image daalo
+import heroImg from "../assets/logo.png"; // 👉 apni image daalo
 import { Link } from "react-router-dom";
 function Hero() {
   return (
