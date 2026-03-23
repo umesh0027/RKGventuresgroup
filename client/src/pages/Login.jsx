@@ -1,28 +1,44 @@
+
 import { useState } from "react";
 import API from "../services/api";
 import { useNavigate, Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login() {
   const [form, setForm] = useState({});
+  const [loading, setLoading] = useState(false);
+
   const navigate = useNavigate();
 
   const submit = async () => {
-  try {
-    const { data } = await API.post("/auth/login", form);
-
-    localStorage.setItem("user", JSON.stringify(data));
-
-    // 👇 ROLE BASED REDIRECT
-    if (data.isAdmin) {
-      navigate("/admin/dashboard");
-    } else {
-      navigate("/");
+    if (!form.email || !form.password) {
+      return toast.error("Please enter email & password");
     }
 
-  } catch (err) {
-    alert(err.response?.data?.msg || "Login failed");
-  }
-};
+    try {
+      setLoading(true);
+
+      const { data } = await API.post("/auth/login", form);
+
+      localStorage.setItem("user", JSON.stringify(data));
+
+      toast.success("Login Successful ✅");
+
+      // ROLE BASED REDIRECT
+      setTimeout(() => {
+        if (data.isAdmin) {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/");
+        }
+      }, 1000);
+
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "Login failed ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-blue-700">
@@ -49,9 +65,14 @@ function Login() {
 
         <button
           onClick={submit}
-          className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+          disabled={loading}
+          className={`w-full py-3 rounded text-white font-semibold transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         <p className="text-center mt-4 text-gray-600">
