@@ -45,6 +45,12 @@ function Products() {
       return;
     }
 
+     if(user?.isAdmin){
+      toast.error("Admins cannot add to cart ❌");
+
+      return;
+    }
+
     addToCart(product, 1);
     toast.success("Added to cart 🛒");
   };
