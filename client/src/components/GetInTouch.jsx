@@ -48,7 +48,7 @@ function GetInTouch() {
 
           {/* WHATSAPP BUTTON */}
           <a
-            href="https://wa.me/8368319749"
+            href="https://wa.me/+918368319749"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-2 mt-6 bg-green-500 text-white px-5 py-2 rounded-lg hover:bg-green-600 transition"
