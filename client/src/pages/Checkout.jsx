@@ -15,7 +15,7 @@ function Checkout() {
     0
   );
 
-  const phone = "8368319749"; // 👉 +91 format
+  const phone = "+918368319749"; // 👉 +91 format
   const whatsappLink = `https://wa.me/${phone}`;
 
   return (
