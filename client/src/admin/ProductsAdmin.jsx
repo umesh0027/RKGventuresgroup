@@ -59,42 +59,58 @@ function ProductsAdmin() {
       </div>
 
       {/* PRODUCTS GRID */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {products.map(p => (
-          <div key={p._id} className="bg-white p-4 rounded shadow">
+   {/* PRODUCTS GRID */}
 
-            <img
-              src={p.images?.[0] || "https://via.placeholder.com/200"}
-              alt=""
-              className="h-40 w-full object-cover rounded"
-            />
+{products.length === 0 ? (
+  <div className="text-center py-20 w-full">
 
-            <h3 className="font-bold mt-2">{p.name}</h3>
-            <p className="text-blue-600">₹{p.price}</p>
+    <h2 className="text-2xl font-semibold text-gray-600">
+      No Products Found 😕
+    </h2>
 
-            <div className="flex justify-between mt-3">
-              
-              {/* EDIT */}
-              <button
-                onClick={() => window.location.href = `/admin/edit/${p._id}`}
-                className="text-green-600 font-semibold"
-              >
-                Edit
-              </button>
+    <p className="text-gray-400 mt-2">
+      {selectedCat
+        ? "No products in this category"
+        : "No products available"}
+    </p>
 
-              {/* DELETE */}
-              <button
-                onClick={() => deleteProduct(p._id)}
-                className="text-red-500 font-semibold"
-              >
-                Delete
-              </button>
+  </div>
+) : (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {products.map(p => (
+      <div key={p._id} className="bg-white p-4 rounded shadow">
 
-            </div>
+        <img
+          src={p.images?.[0] || "https://via.placeholder.com/200"}
+          alt=""
+          className="h-40 w-full object-cover rounded"
+        />
 
-          </div>
-        ))}
+        <h3 className="font-bold mt-2">{p.name}</h3>
+        <p className="text-blue-600">₹{p.price}</p>
+
+        <div className="flex justify-between mt-3">
+
+          <button
+            onClick={() => window.location.href = `/admin/edit/${p._id}`}
+            className="text-green-600"
+          >
+            Edit
+          </button>
+
+          <button
+            onClick={() => deleteProduct(p._id)}
+            className="text-red-500"
+          >
+            Delete
+          </button>
+
+        </div>
+
       </div>
+    ))}
+  </div>
+)}
 
     </div>
   );
