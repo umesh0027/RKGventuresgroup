@@ -90,6 +90,14 @@ function Products() {
   return (
     <>
       <div className="p-4 md:p-10 min-h-screen bg-gray-100">
+          <div className=" p-6  mb-10 text-center max-w-3xl mx-auto">
+         
+           <p className="text-2xl font-bold mt-6 text-yellow-800"> Looking for bulk orders or wholesale supply? </p>
+           <p className=" text-yellow-800  text-lg md:text-base font-semibold">
+Get in touch with our team for the best pricing and customized solutions. 
+We are committed to delivering quality products at scale with complete reliability.
+          </p>
+       </div>
 
         <h2 className="text-3xl font-bold mb-6 text-blue-600 text-center">
           Our Products
