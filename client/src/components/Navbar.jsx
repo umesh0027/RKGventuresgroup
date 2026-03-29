@@ -20,7 +20,7 @@ function Navbar() {
     navigate("/login");
   };
 
-  const phone = "8368319749";
+  const phone = "+918368319749";
   const whatsappLink = `https://wa.me/${phone}`;
 
   // ✅ ACTIVE CLASS (DESKTOP)
@@ -59,7 +59,7 @@ function Navbar() {
               src="https://img.icons8.com/color/20/whatsapp.png"
               alt=""
             />
-            +91 {phone}
+             {phone}
           </a>
         </div>
 
