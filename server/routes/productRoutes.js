@@ -8,17 +8,20 @@ const {
   updateProduct,
   deleteProduct,
   getProductsByCategory,
-    getAllProducts
+    getAllProducts,
+    getSingleProduct
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadMiddleware");
 
 const router = express.Router();
 
+router.post("/", protect,adminOnly, upload.array("images"), createProduct);
 router.get("/", getProducts);
 router.get("/all", getAllProducts);
-router.post("/", protect,adminOnly, upload.array("images"), createProduct);
-router.put("/:id", protect, adminOnly, updateProduct);
+router.get("/:id", getSingleProduct);
+
+router.put("/:id", protect, adminOnly, upload.array("images"), updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
 
 router.get("/category/:categoryId", getProductsByCategory);
