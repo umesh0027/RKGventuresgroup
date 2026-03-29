@@ -37,7 +37,7 @@ exports.createProduct = async (req, res) => {
 };
 // READ
 exports.getProducts = async (req, res) => {
-  const { limit = 5, skip = 0 } = req.query;
+  const { limit = 6, skip = 0 } = req.query;
 
   try {
     const products = await Product.find()
@@ -71,7 +71,7 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProductsByCategory = async (req, res) => {
   const { categoryId } = req.params;
-  const { limit = 5, skip = 0 } = req.query;
+  const { limit = 6, skip = 0 } = req.query;
 
   try {
     const products = await Product.find({ category: categoryId })
@@ -79,6 +79,15 @@ exports.getProductsByCategory = async (req, res) => {
       .limit(Number(limit))
       .skip(Number(skip));
 
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ msg: "Error fetching products" });
+  }
+};
+
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find().populate("category");
     res.json(products);
   } catch (err) {
     res.status(500).json({ msg: "Error fetching products" });
