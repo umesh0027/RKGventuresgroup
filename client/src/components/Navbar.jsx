@@ -20,7 +20,7 @@ function Navbar() {
     navigate("/login");
   };
 
-  const phone = "+918368319749";
+  const phone = "8368319749";
   const whatsappLink = `https://wa.me/${phone}`;
 
   // ✅ ACTIVE CLASS (DESKTOP)
