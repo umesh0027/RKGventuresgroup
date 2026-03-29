@@ -14,6 +14,8 @@ function Home() {
   const [skip, setSkip] = useState(0);
 
   const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+const [initialLoad, setInitialLoad] = useState(true);
 
   // Load categories
   useEffect(() => {
@@ -32,38 +34,77 @@ function Home() {
 
   
 
-  const loadProducts = async (catId, skipVal, reset = false) => {
+//  
+
+// const loadProducts = async (catId, skipVal, reset = false) => {
+//   setLoading(true);
+
+//   let url =
+//     catId === "all"
+//       ? `/products?limit=6&skip=${skipVal}`
+//       : `/products/category/${catId}?limit=6&skip=${skipVal}`;
+
+//   const res = await API.get(url);
+
+//   if (reset) {
+//     setProducts(res.data);
+//     setSkip(6);
+//   } else {
+//     // 🔥 REMOVE DUPLICATES
+//     setProducts(prev => {
+//       const newProducts = [...prev, ...res.data];
+
+//       const uniqueProducts = newProducts.filter(
+//         (item, index, self) =>
+//           index === self.findIndex(p => p._id === item._id)
+//       );
+
+//       return uniqueProducts;
+//     });
+
+//     setSkip(skipVal + 6);
+//   }
+
+//   setLoading(false);
+// };
+
+const loadProducts = async (catId, skipVal, reset = false) => {
   setLoading(true);
 
   let url =
     catId === "all"
-      ? `/products?limit=5&skip=${skipVal}`
-      : `/products/category/${catId}?limit=5&skip=${skipVal}`;
+      ? `/products?limit=6&skip=${skipVal}`
+      : `/products/category/${catId}?limit=6&skip=${skipVal}`;
 
   const res = await API.get(url);
 
   if (reset) {
     setProducts(res.data);
-    setSkip(5);
+    setSkip(6);
+    setInitialLoad(true);
+
+    // 🔥 CHECK if more exists
+    setHasMore(res.data.length === 6);
+
   } else {
-    // 🔥 REMOVE DUPLICATES
     setProducts(prev => {
       const newProducts = [...prev, ...res.data];
 
-      const uniqueProducts = newProducts.filter(
+      return newProducts.filter(
         (item, index, self) =>
           index === self.findIndex(p => p._id === item._id)
       );
-
-      return uniqueProducts;
     });
 
-    setSkip(skipVal + 5);
+    setSkip(skipVal + 6);
+    setInitialLoad(false);
+
+    // 🔥 CHECK if more exists
+    setHasMore(res.data.length === 6);
   }
 
   setLoading(false);
 };
-
   return (
     <div>
       <Hero />
@@ -77,35 +118,7 @@ function Home() {
         </h2>
 
         
-        {/* <div className="flex flex-wrap justify-center gap-4 py-8">
-
-         
-          <button
-            onClick={() => setSelectedCat("all")}
-            className={`px-5 py-2 rounded-full border ${
-              selectedCat === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 hover:bg-blue-100"
-            }`}
-          >
-            All Products
-          </button>
-
-         
-          {categories.map(cat => (
-            <button
-              key={cat._id}
-              onClick={() => setSelectedCat(cat._id)}
-              className={`px-5 py-2 rounded-full border ${
-                selectedCat === cat._id
-                  ? "bg-blue-600 hover:bg-blue-700 text-white"
-                  : "bg-gray-100 hover:bg-blue-100"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div> */}
+       
 
 
         <div className="py-6">
@@ -168,17 +181,17 @@ function Home() {
   {/* ✅ PRODUCTS */}
   {!loading && products.length > 0 && (
     <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 cursor-pointer">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 cursor-pointer ">
 
         {products.map(p => (
           <div
             key={p._id}
-            className="bg-white p-3 rounded shadow transition transform hover:-translate-y-2 hover:shadow-lg"
+            className="bg-white p-3  rounded shadow transition transform hover:-translate-y-2 hover:shadow-lg"
           >
             <img
               src={p.images?.[0] || "https://via.placeholder.com/200"}
               alt=""
-              className="h-32 w-full object-cover rounded"
+              className="h-40 md:h-48 lg:h-44 w-full object-cover rounded"
             />
 
             <h3 className="text-sm mt-2 font-semibold">
@@ -186,7 +199,7 @@ function Home() {
             </h3>
 
             <p className="text-blue-600 text-sm">
-              ₹{p.price}
+              ₹{p.price}/-
             </p>
           </div>
         ))}
@@ -194,94 +207,43 @@ function Home() {
       </div>
 
       {/* VIEW MORE */}
-      <div className="text-center mt-6">
+      {/* <div className="text-center mt-6">
         <button
           onClick={() => loadProducts(selectedCat, skip)}
           className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
         >
           View More
         </button>
-      </div>
+      </div> */}
+
+      <div className="text-center mt-6 flex justify-center gap-4">
+
+  {/* VIEW MORE */}
+  {hasMore && (
+    <button
+      onClick={() => loadProducts(selectedCat, skip)}
+      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded"
+    >
+      View More
+    </button>
+  )}
+
+  {/* VIEW LESS */}
+  {!initialLoad && (
+    <button
+      onClick={() => loadProducts(selectedCat, 0, true)}
+      className="px-6 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded"
+    >
+      View Less
+    </button>
+  )}
+
+</div>
     </>
   )}
 
 </div>
-      {/* <div className="p-10 bg-white">
-
-        <h2 className="text-4xl font-bold mb-6 text-center text-blue-600">
-          Shop by Categories
-        </h2>
-
-        <div className="flex flex-wrap justify-center gap-4">
-
-         
-          <button
-            onClick={() => setSelectedCat("all")}
-            className={`px-5 py-2 rounded-full border ${
-              selectedCat === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 hover:bg-blue-100"
-            }`}
-          >
-            All Products
-          </button>
-
-         
-          {categories.map(cat => (
-            <button
-              key={cat._id}
-              onClick={() => setSelectedCat(cat._id)}
-              className={`px-5 py-2 rounded-full border ${
-                selectedCat === cat._id
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-100 hover:bg-blue-100"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-      </div>
-
    
-      <div className="p-10 bg-gray-100 min-h-screen">
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 cursor-pointer  ">
-
-          {products.map(p => (
-            <div key={p._id} className="bg-white p-3 rounded shadow  transition transform hover:-translate-y-2 hover:shadow-lg">
-
-              <img
-                src={p.images?.[0] || "https://via.placeholder.com/200"}
-                alt=""
-                className="h-32 w-full object-cover rounded"
-              />
-
-              <h3 className="text-sm mt-2 font-semibold">
-                {p.name}
-              </h3>
-
-              <p className="text-blue-600 text-sm">
-                ₹{p.price}
-              </p>
-
-            </div>
-          ))}
-
-        </div>
-
-       
-        <div className="text-center mt-6">
-          <button
-            onClick={() => loadProducts(selectedCat, skip)}
-            className="px-6 py-2 bg-blue-600 text-white rounded"
-          >
-            View More
-          </button>
-        </div>
-
-      </div> */}
       <GetInTouch/>
 
       <Testimonials/>
