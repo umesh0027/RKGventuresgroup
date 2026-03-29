@@ -7,7 +7,8 @@ const {
   getProducts,
   updateProduct,
   deleteProduct,
-  getProductsByCategory
+  getProductsByCategory,
+    getAllProducts
 } = require("../controllers/productController");
 
 const upload = require("../middleware/uploadMiddleware");
@@ -15,6 +16,7 @@ const upload = require("../middleware/uploadMiddleware");
 const router = express.Router();
 
 router.get("/", getProducts);
+router.get("/all", getAllProducts);
 router.post("/", protect,adminOnly, upload.array("images"), createProduct);
 router.put("/:id", protect, adminOnly, updateProduct);
 router.delete("/:id", protect, adminOnly, deleteProduct);
