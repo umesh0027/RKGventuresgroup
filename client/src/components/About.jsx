@@ -95,7 +95,7 @@ function About() {
           <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
 
             <div>
-              <h2 className="text-3xl font-bold">500+</h2>
+              <h2 className="text-3xl font-bold">50+</h2>
               <p className="text-gray-200">Products</p>
             </div>
 
