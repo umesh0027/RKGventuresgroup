@@ -157,7 +157,7 @@ function Navbar() {
             className="flex items-center gap-2 text-green-600 font-bold"
           >
             <img src="https://img.icons8.com/color/20/whatsapp.png" alt="" />
-            +91 {phone}
+             {phone}
           </a>
 
           <NavLink to="/" className={mobileNavClass}>Home</NavLink>
