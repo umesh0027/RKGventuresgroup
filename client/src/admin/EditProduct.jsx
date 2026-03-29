@@ -1,6 +1,4 @@
 
-
-
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "../services/api";
@@ -12,19 +10,41 @@ function EditProduct() {
 
   const [form, setForm] = useState({
     name: "",
-    price: ""
+    price: "",
+    stock: "",
+    description: "",
+    category: ""
   });
+
+  const [categories, setCategories] = useState([]);
+  const [images, setImages] = useState([]); // new images
+  const [preview, setPreview] = useState([]); // preview images
 
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
 
-  // 🔄 FETCH PRODUCT
+  // 🔄 FETCH PRODUCT + CATEGORIES
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchData = async () => {
       try {
-        const res = await API.get("/products");
-        const p = res.data.find(i => i._id === id);
-        if (p) setForm(p);
+        const [prodRes, catRes] = await Promise.all([
+          API.get(`/products/${id}`),
+          API.get("/categories")
+        ]);
+
+        const p = prodRes.data;
+
+        setForm({
+          name: p.name || "",
+          price: p.price || "",
+          stock: p.stock || "",
+          description: p.description || "",
+          category: p.category?._id || ""
+        });
+
+        setPreview(p.images || []);
+        setCategories(catRes.data);
+
       } catch (err) {
         toast.error("Failed to load product ❌");
       } finally {
@@ -32,19 +52,41 @@ function EditProduct() {
       }
     };
 
-    fetchProduct();
+    fetchData();
   }, [id]);
+
+  // 📸 HANDLE IMAGE CHANGE
+  const handleImageChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    setImages(files);
+
+    // preview
+    const previewUrls = files.map(file => URL.createObjectURL(file));
+    setPreview(previewUrls);
+  };
 
   // ✏️ UPDATE PRODUCT
   const update = async () => {
     if (!form.name || !form.price) {
-      return toast.error("Please fill all fields");
+      return toast.error("Please fill required fields");
     }
 
     try {
       setLoading(true);
 
-      await API.put(`/products/${id}`, form);
+      const data = new FormData();
+
+      Object.keys(form).forEach(key => {
+        data.append(key, form[key]);
+      });
+
+      // images
+      images.forEach(img => {
+        data.append("images", img);
+      });
+
+      await API.put(`/products/${id}`, data);
 
       toast.success("Product Updated ✅");
 
@@ -69,33 +111,90 @@ function EditProduct() {
   }
 
   return (
-    <div className="p-10 max-w-xl mx-auto">
+    <div className="p-4 md:p-10 max-w-3xl mx-auto">
 
-      <h2 className="text-3xl mb-4 font-bold text-white">
+      <h2 className="text-3xl font-bold text-center text-white mb-6">
         Edit Product
       </h2>
 
-      <input
-        value={form.name}
-        onChange={e => setForm({ ...form, name: e.target.value })}
-        className="border p-3 w-full mb-4 rounded"
-        placeholder="Product Name"
-      />
+      <div className="bg-white p-6 rounded-xl shadow space-y-4">
 
-      <input
-        value={form.price}
-        onChange={e => setForm({ ...form, price: e.target.value })}
-        className="border p-3 w-full mb-4 rounded"
-        placeholder="Price"
-      />
+        {/* NAME */}
+        <input
+          value={form.name}
+          onChange={e => setForm({ ...form, name: e.target.value })}
+          className="border p-3 w-full rounded"
+          placeholder="Product Name"
+        />
 
-      <button
-        onClick={update}
-        disabled={loading}
-        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition disabled:opacity-50"
-      >
-        {loading ? "Updating..." : "Update Product"}
-      </button>
+        {/* PRICE */}
+        <input
+          value={form.price}
+          onChange={e => setForm({ ...form, price: e.target.value })}
+          className="border p-3 w-full rounded"
+          placeholder="Price"
+        />
+
+        {/* STOCK */}
+        <input
+          value={form.stock}
+          onChange={e => setForm({ ...form, stock: e.target.value })}
+          className="border p-3 w-full rounded"
+          placeholder="Stock"
+        />
+
+        {/* CATEGORY */}
+        <select
+          value={form.category}
+          onChange={e => setForm({ ...form, category: e.target.value })}
+          className="border p-3 w-full rounded"
+        >
+          <option value="">Select Category</option>
+          {categories.map(c => (
+            <option key={c._id} value={c._id}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+
+        {/* DESCRIPTION */}
+        <textarea
+          value={form.description}
+          onChange={e => setForm({ ...form, description: e.target.value })}
+          className="border p-3 w-full rounded"
+          placeholder="Description"
+        />
+
+        {/* IMAGE INPUT */}
+        <input
+          type="file"
+          multiple
+          className="border p-2 w-full"
+          onChange={handleImageChange}
+        />
+
+        {/* IMAGE PREVIEW */}
+        <div className="flex gap-3 flex-wrap">
+          {preview.map((img, i) => (
+            <img
+              key={i}
+              src={img}
+              alt=""
+              className="h-20 w-20 object-cover rounded border"
+            />
+          ))}
+        </div>
+
+        {/* BUTTON */}
+        <button
+          onClick={update}
+          disabled={loading}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded transition"
+        >
+          {loading ? "Updating..." : "Update Product"}
+        </button>
+
+      </div>
 
     </div>
   );
