@@ -12,7 +12,7 @@ function ProductCard({ product, addToCart }) {
       </h3>
 
       <p className="text-blue-600 font-bold">
-        ₹{product.price}
+        ₹{product.price}/-
       </p>
 
       <button
