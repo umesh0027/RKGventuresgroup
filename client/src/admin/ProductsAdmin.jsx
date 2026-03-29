@@ -22,7 +22,7 @@ function ProductsAdmin() {
       API.get(`/products/category/${selectedCat}`)
         .then(res => setProducts(res.data));
     } else {
-      API.get("/products").then(res => setProducts(res.data));
+      API.get("/products/all").then(res => setProducts(res.data));
     }
   }, [selectedCat]);
 
@@ -76,14 +76,14 @@ function ProductsAdmin() {
 
   </div>
 ) : (
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
     {products.map(p => (
       <div key={p._id} className="bg-white p-4 rounded shadow">
 
         <img
           src={p.images?.[0] || "https://via.placeholder.com/200"}
           alt=""
-          className="h-40 w-full object-cover rounded"
+          className="h-40 md:h-48 lg:h-44 w-full object-cover rounded"
         />
 
         <h3 className="font-bold mt-2">{p.name}</h3>
