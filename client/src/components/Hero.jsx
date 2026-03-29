@@ -19,6 +19,11 @@ function Hero() {
           <p className="text-gray-600 text-lg">
             We are manufactures of a wide range of surgical , Orthopedics , and medical products  offering everything from lower to premium quality. Trusted by professionals, made with precision.
           </p>
+          <p className="mt-6 text-yellow-800 font-medium text-lg md:text-base">
+            Looking for bulk orders or wholesale supply? 
+Get in touch with our team for the best pricing and customized solutions. 
+We are committed to delivering quality products at scale with complete reliability.
+          </p>
 
           <div className="flex gap-4">
             <Link to="/products" className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
