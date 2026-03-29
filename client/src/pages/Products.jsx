@@ -145,6 +145,7 @@ function Products() {
 
             {filtered.map(p => (
               <ProductCard
+                className="h-full flex flex-col"
                 key={p._id}
                 product={p}
                 addToCart={() => handleAddToCart(p)}
