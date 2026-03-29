@@ -14,6 +14,10 @@ function Categories() {
   }, []);
 
   const addCategory = async () => {
+     if(!name){
+      toast.error("Category name cannot be empty");
+      return;
+    }
     await API.post("/categories", { name });
     setName("");
     fetch();
