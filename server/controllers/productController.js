@@ -36,6 +36,11 @@ exports.createProduct = async (req, res) => {
   }
 };
 // READ
+// exports.getProducts = async (req, res) => {
+//   const products = await Product.find().populate("category");
+//   res.json(products);
+// };
+
 exports.getProducts = async (req, res) => {
   const { limit = 6, skip = 0 } = req.query;
 
@@ -50,17 +55,60 @@ exports.getProducts = async (req, res) => {
     res.status(500).json({ msg: "Error fetching products" });
   }
 };
-
 // UPDATE
+// exports.updateProduct = async (req, res) => {
+//   const product = await Product.findByIdAndUpdate(
+//     req.params.id,
+//     req.body,
+//     { new: true }
+//   );
+//   res.json(product);
+// };
 exports.updateProduct = async (req, res) => {
-  const product = await Product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
-  res.json(product);
-};
+  try {
+    let images = [];
 
+    // 👉 agar new images upload hui
+    if (req.files && req.files.length > 0) {
+
+      for (let file of req.files) {
+        const result = await new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: "products" },
+            (error, result) => {
+              if (error) reject(error);
+              else resolve(result);
+            }
+          );
+
+          streamifier.createReadStream(file.buffer).pipe(stream);
+        });
+
+        images.push(result.secure_url);
+      }
+    }
+
+    const updateData = {
+      ...req.body,
+    };
+
+    // 👉 agar new images hai to replace karo
+    if (images.length > 0) {
+      updateData.images = images;
+    }
+
+    const product = await Product.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json(product);
+
+  } catch (err) {
+    res.status(500).json({ msg: "Update error" });
+  }
+};
 // DELETE
 exports.deleteProduct = async (req, res) => {
   await Product.findByIdAndDelete(req.params.id);
@@ -85,11 +133,22 @@ exports.getProductsByCategory = async (req, res) => {
   }
 };
 
+// get all products without pagination
 exports.getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("category");
     res.json(products);
   } catch (err) {
     res.status(500).json({ msg: "Error fetching products" });
+  }
+};
+
+// GET SINGLE PRODUCT
+exports.getSingleProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id).populate("category");
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ msg: "Error fetching product" });
   }
 };
