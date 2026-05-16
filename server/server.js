@@ -3,17 +3,14 @@ const cors = require("cors");
 require("dotenv").config();
 
 const connectDB = require("./config/db");
-const PORT = process.env.PORT || 5000;
+
 
 const app = express();
 
 connectDB();
 
 app.use(
-	cors({
-		origin: "https://rkgventuresgroup.vercel.app",
-		credentials: true,
-	})
+	cors()
 );
 app.use(express.json());
 
@@ -29,8 +26,4 @@ app.get("/", (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-  console.log(`App is listening at ${PORT}`);
-});
-
-module.exports = app; 
+app.listen(5000, () => console.log("Server running"));
