@@ -3,7 +3,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://rkgventuresgroup.onrender.com/api",
+  baseURL: "https://rkgventuresgroup.vercel.app/api",
 });
 
 // Attach token automatically
